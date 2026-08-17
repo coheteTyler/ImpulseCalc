@@ -1,0 +1,28 @@
+name: Release portable exe
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          pip install -r requirements.txt pyinstaller
+      - name: Build ImpulseCalc.exe
+        run: pyinstaller --noconfirm ImpulseCalc.spec
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/ImpulseCalc.exe
+          generate_release_notes: true
+          body: |
+            Portable Windows app. Double-click ImpulseCalc.exe — no Python install.
+            First run registers impulsecalc:// so share links reopen the calculator.
