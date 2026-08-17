@@ -1,0 +1,1786 @@
+<html>
+<head>
+  <title>Impulse Turbine Calculator</title>
+  <script src="calc.js?v=designsliders1"></script>
+  <style>
+    body {
+      /* purple-tinted page wash over classic winback texture */
+      background-color: #d4cce8;
+      background-image:
+        linear-gradient(rgba(88, 48, 128, 0.22), rgba(72, 40, 110, 0.18)),
+        url("winback.gif");
+      color: #000;
+      font-family: "Times New Roman", Times, serif;
+      margin: 12px 18px 24px 18px;
+    }
+    a { color: #0000ee; }
+    hr { border: none; border-top: 1px solid #444; margin: 14px 0; }
+    table.border, table[border] {
+      border-collapse: collapse;
+      background: #f6f2fa;
+      margin: 6px 0 10px 0;
+    }
+    table[border] th, table[border] td {
+      border: 1px solid #000;
+      padding: 3px 8px;
+      font-size: 15px;
+    }
+    table[border] th {
+      font-weight: bold;
+      background: #e8e0f0;
+      white-space: nowrap;
+      text-align: left;
+    }
+    input[type="text"], input[type="number"], select {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      border: 1px solid #666;
+      background: #fff;
+      padding: 1px 3px;
+    }
+    input[type="button"] {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      font-weight: bold;
+      background: #d4d0c8;
+      border: 1px solid #404040;
+      padding: 2px 10px;
+      box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #808080 inset;
+      cursor: pointer;
+    }
+    input[type="button"]:active {
+      box-shadow: -1px -1px 0 #fff inset, 1px 1px 0 #808080 inset;
+    }
+    input[type="range"] { width: 140px; vertical-align: middle; }
+    .title { font-size: 28px; }
+    .meta { font-size: 14px; font-style: italic; }
+    .sec { font-size: 18px; font-weight: bold; }
+    .howto {
+      background: #f0ebf7;
+      border: 1px solid #666;
+      padding: 8px 12px;
+      margin: 8px 0 10px 0;
+      font-size: 14px;
+      max-width: 920px;
+      line-height: 1.35;
+    }
+    .howto b { font-size: 15px; }
+    .howto ol { margin: 6px 0 0 20px; padding: 0; }
+    .hint { font-size: 13px; font-style: italic; color: #222; }
+    ul.block { margin-top: 6px; }
+    #tri_svg, #blade_svg_wrap { margin: 8px 0; }
+    #tri_svg {
+      min-height: 340px;
+      background: #f4f0fa;
+      border: 1px solid #000;
+      display: inline-block;
+      max-width: 100%;
+      overflow: auto;
+    }
+    #tri_svg svg { display: block; }
+    #blade_svg {
+      background: #f4f0fa;
+      border: 1px solid #000;
+      display: block;
+    }
+    #cp_img { border: 1px solid #000; margin-top: 6px; max-width: 100%; display: none; }
+    small.foot { font-style: italic; }
+    .row { margin: 4px 0 8px 0; }
+    .lab { display: inline-block; min-width: 170px; }
+    #pipeline_banner {
+      background: #e4dcf2;
+      border: 1px solid #534;
+      padding: 6px 12px;
+      margin: 8px 0 4px 0;
+      font-size: 14px;
+      font-family: "Courier New", Courier, monospace;
+      max-width: 960px;
+    }
+    #server_banner {
+      display: none;
+      background: #fde8e8;
+      border: 2px solid #a00;
+      color: #400;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 14px;
+      max-width: 960px;
+      font-weight: bold;
+    }
+    .inherit {
+      background: #eef6ee;
+      border: 1px solid #486;
+      padding: 6px 10px;
+      margin: 6px 0 10px 0;
+      font-size: 13px;
+      max-width: 920px;
+      line-height: 1.4;
+    }
+    .inherit .ttl { font-weight: bold; margin-right: 6px; }
+    /* ── Design fixes panel (professional, collapsible — no dead space) ── */
+    #fix_box.fix-panel {
+      background: linear-gradient(180deg, #f7f3fc 0%, #efe8f8 100%);
+      border: 1px solid #5a4878;
+      border-left: 4px solid #6b4fa0;
+      padding: 0;
+      max-width: 980px;
+      overflow: hidden;
+    }
+    .fix-panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 12px;
+      padding: 10px 14px 8px 14px;
+      border-bottom: 1px solid #c8bdd8;
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .fix-panel-head .fix-panel-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #2a1f3d;
+      margin: 0;
+    }
+    #advice_summary {
+      font-style: normal;
+      font-size: 13px;
+      color: #443;
+    }
+    .fix-panel-blurb {
+      padding: 6px 14px 0 14px;
+      font-size: 12px;
+      color: #443;
+      line-height: 1.4;
+    }
+    .fix-status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px 4px 14px;
+      min-height: 0;
+    }
+    .fix-pill {
+      display: inline-block;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      letter-spacing: 0.02em;
+    }
+    .fix-pill-open { background: #fde8e0; border-color: #c06040; color: #602010; }
+    .fix-pill-pass { background: #e4f4e8; border-color: #3a8a50; color: #1a5028; }
+    .fix-pill-info { background: #ebe6f4; border-color: #7a6a98; color: #3a3060; }
+    .fix-pill-busy {
+      background: #efe8f8;
+      border-color: #6b4fa0;
+      color: #3a2860;
+      animation: fix-pulse 1.1s ease-in-out infinite;
+    }
+    @keyframes fix-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+    #suggestion_list {
+      margin: 0;
+      padding: 6px 12px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      /* height follows content — never pad empty void after cards leave */
+      min-height: 0 !important;
+      height: auto !important;
+      transition: opacity 0.15s ease;
+    }
+    #suggestion_list.fix-list-busy {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    #suggestion_list.fix-list-busy .fix-card {
+      filter: grayscale(0.15);
+    }
+    .fix-card {
+      border: 1px solid #b8aec8;
+      border-left: 4px solid #888;
+      background: #fffcf8;
+      border-radius: 3px;
+      padding: 0;
+      margin: 0;
+      box-shadow: 0 1px 2px rgba(40, 20, 60, 0.06);
+      transition: opacity 0.18s ease, transform 0.18s ease, border-color 0.15s ease;
+    }
+    .fix-card.fix-card-open {
+      border-left-color: #b03020;
+      background: #fffaf6;
+    }
+    .fix-card.fix-card-open.sev-warn {
+      border-left-color: #c07020;
+      background: #fffaf0;
+    }
+    .fix-card.fix-card-readonly {
+      border-left-color: #8870a0;
+      border-style: solid;
+      background: #f8f6fc;
+      opacity: 0.92;
+    }
+    .fix-card.fix-card-leaving {
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+    .fix-card-inner {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 9px 12px 10px 10px;
+      cursor: pointer;
+    }
+    .fix-card-inner input[type="checkbox"] {
+      margin: 3px 0 0 0;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      accent-color: #6b4fa0;
+    }
+    .fix-card-body { flex: 1; min-width: 0; }
+    .fix-card-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+      margin-bottom: 4px;
+    }
+    .fix-badge {
+      display: inline-block;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      padding: 1px 6px;
+      border-radius: 2px;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .fix-badge-fail { background: #a82818; }
+    .fix-badge-warn { background: #b07018; }
+    .fix-badge-info { background: #605080; }
+    .fix-card-name {
+      font-weight: bold;
+      font-size: 14px;
+      color: #1e1628;
+    }
+    .fix-card-metrics {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      color: #333;
+      margin: 2px 0 5px 0;
+    }
+    .fix-card-suggestion {
+      font-size: 13px;
+      line-height: 1.35;
+      color: #222;
+      margin: 0 0 4px 0;
+    }
+    .fix-card-knobs {
+      font-size: 11px;
+      font-style: italic;
+      color: #554;
+      margin: 0;
+    }
+    .fix-empty {
+      text-align: center;
+      padding: 16px 12px;
+      background: #f0f8f2;
+      border: 1px solid #8aba90;
+      border-radius: 3px;
+      color: #1a5030;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .fix-empty strong { display: block; font-size: 14px; margin-bottom: 4px; }
+    .fix-passes {
+      font-size: 12px;
+      color: #2a4a30;
+      background: #f0f6f0;
+      border: 1px solid #c0d8c4;
+      border-radius: 3px;
+      padding: 6px 10px;
+      line-height: 1.4;
+    }
+    .fix-passes summary {
+      cursor: pointer;
+      font-weight: bold;
+      color: #1a4028;
+      list-style: none;
+    }
+    .fix-passes summary::-webkit-details-marker { display: none; }
+    .fix-passes summary::before {
+      content: "▸ ";
+      font-family: "Courier New", monospace;
+      color: #4a8060;
+    }
+    .fix-passes[open] summary::before { content: "▾ "; }
+    .fix-passes ul {
+      margin: 6px 0 0 0;
+      padding: 0 0 0 16px;
+      columns: 2;
+      column-gap: 16px;
+    }
+    .fix-passes li { margin: 2px 0; break-inside: avoid; }
+    .fix-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+      padding: 8px 12px 12px 12px;
+      border-top: 1px solid #c8bdd8;
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .fix-toolbar input[type="button"].fix-btn-primary {
+      background: #c8b8e0;
+      border-color: #403060;
+    }
+    .fix-toolbar input[type="button"].fix-btn-accent {
+      background: #b8a0d8;
+      border-color: #403060;
+    }
+    .fix-toolbar .fix-toolbar-sep {
+      width: 1px;
+      height: 22px;
+      background: #b0a0c0;
+      margin: 0 2px;
+    }
+    .fix-toolbar .hint { margin: 0; }
+    #delta_box.fix-delta {
+      margin: 0 12px 10px 12px;
+      padding: 6px 10px;
+      background: #f4f0fa;
+      border: 1px solid #c8bdd8;
+      border-radius: 2px;
+      font-size: 12px;
+      max-height: 120px;
+      overflow: auto;
+    }
+    #delta_box.fix-delta:empty { display: none; }
+    .inherit input[type="text"] {
+      background: #f4faf4;
+      border: 1px solid #8a8;
+      width: auto;
+    }
+    .stale-warn {
+      color: #800;
+      font-weight: bold;
+      font-style: italic;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 6px;
+      max-width: 980px;
+      margin: 8px 0 12px 0;
+    }
+    .metric-card {
+      background: #f4f0fa;
+      border: 1px solid #000;
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+    .metric-card .k { font-size: 11px; color: #333; display: block; }
+    .metric-card .v {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .metric-card.warn { background: #fde8d0; border-color: #a60; }
+    .metric-card.bad { background: #fde0e0; border-color: #a00; }
+    .metric-card.good { background: #e6f5e6; border-color: #060; }
+    table.data {
+      border-collapse: collapse;
+      background: #f6f2fa;
+      font-size: 12px;
+      font-family: "Courier New", Courier, monospace;
+      margin: 6px 0 10px 0;
+    }
+    table.data th, table.data td {
+      border: 1px solid #000;
+      padding: 2px 6px;
+      text-align: right;
+    }
+    table.data th { background: #e8e0f0; text-align: center; }
+    .scroll-table {
+      max-height: 280px;
+      overflow: auto;
+      max-width: 980px;
+      border: 1px solid #444;
+      margin-bottom: 10px;
+    }
+    .plot-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; }
+    .plot-row img {
+      border: 1px solid #000;
+      background: #f4f0fa;
+      max-width: 100%;
+    }
+    .checklist { margin: 6px 0 0 18px; font-size: 13px; line-height: 1.4; }
+    /* ── CFD fidelity mode (top bar) ── */
+    #fidelity_bar {
+      margin: 8px 0 8px 0;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, #f3ecfa 0%, #e4daf4 100%);
+      border: 2px solid #5a3d88;
+      max-width: 960px;
+      box-shadow: 0 1px 0 #fff inset;
+    }
+    #fidelity_bar .fid-title {
+      font-weight: bold;
+      font-size: 15px;
+      color: #2a1a40;
+      margin-bottom: 6px;
+    }
+    #fidelity_bar .fid-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+    }
+    #fidelity_bar label.fid-opt {
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #fidelity_bar input[type="range"]#fidelity_level {
+      width: 220px;
+      max-width: 100%;
+      vertical-align: middle;
+    }
+    #fidelity_hint {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      font-style: italic;
+      color: #332;
+      line-height: 1.35;
+      max-width: 900px;
+    }
+    #fidelity_readout {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      background: #fff;
+      border: 1px solid #867;
+      padding: 2px 8px;
+      color: #201830;
+    }
+    #fidelity_bar.fid-accurate {
+      border-color: #8040a0;
+      background: linear-gradient(180deg, #efe4fc 0%, #dcc8f4 100%);
+    }
+    /* Long-running mesh/solve progress (sticky so wait is obvious) */
+    #long_job_panel {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      margin: 8px 0 12px 0;
+      padding: 12px 14px;
+      max-width: 960px;
+      background: linear-gradient(180deg, #fff8e8 0%, #f5e6c8 100%);
+      border: 3px solid #b07018;
+      box-shadow: 0 2px 8px rgba(80, 40, 0, 0.18);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    #long_job_panel.lj-active { display: block; }
+    #long_job_panel.lj-done-ok {
+      border-color: #3a8a50;
+      background: linear-gradient(180deg, #eef8f0 0%, #d8f0dc 100%);
+    }
+    #long_job_panel.lj-done-fail {
+      border-color: #a82818;
+      background: linear-gradient(180deg, #fde8e8 0%, #f5d0d0 100%);
+    }
+    #long_job_panel .lj-title {
+      font-weight: bold;
+      font-size: 16px;
+      color: #402010;
+      margin: 0 0 4px 0;
+    }
+    #long_job_panel .lj-title .lj-pulse {
+      display: inline-block;
+      animation: lj-blink 1.1s ease-in-out infinite;
+    }
+    @keyframes lj-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    #long_job_panel .lj-line {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      margin: 2px 0;
+      color: #221;
+    }
+    #long_job_bar_wrap {
+      margin: 8px 0 4px 0;
+      height: 22px;
+      background: #fff;
+      border: 1px solid #864;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    #long_job_bar {
+      height: 100%;
+      width: 0%;
+      background: repeating-linear-gradient(
+        -45deg,
+        #c08030,
+        #c08030 10px,
+        #d49840 10px,
+        #d49840 20px
+      );
+      background-size: 28px 28px;
+      animation: lj-stripe 0.8s linear infinite;
+      transition: width 0.4s ease;
+      min-width: 2%;
+    }
+    #long_job_panel.lj-done-ok #long_job_bar {
+      background: #4a9a60;
+      animation: none;
+      width: 100% !important;
+    }
+    @keyframes lj-stripe {
+      from { background-position: 0 0; }
+      to { background-position: 28px 0; }
+    }
+    #long_job_pct {
+      font-weight: bold;
+      font-family: "Courier New", Courier, monospace;
+    }
+  </style>
+  <link rel="stylesheet" href="app-chrome.css">
+  <script src="app-chrome.js"></script>
+</head>
+<body>
+
+<span class="title">Impulse Turbine <i><b>Calculator</b></i></span> 1.1
+<br>
+<span class="meta" style="display:block;margin:4px 0 0 0;">
+  <b>Default stage:</b> user table — tip 0.04 m · hub 0.035 m · r_m 0.0375 m · Z=25 ·
+  c=0.01 m · s=0.008796 m · t_min=0.005 m (<code>user_stage_r040</code>)
+</span>
+<br>
+<div id="unit_bar" style="margin:8px 0 6px 0; padding:6px 10px; background:#e8e0f4; border:1px solid #534; max-width:520px;">
+  <b>Units:</b>
+  <label style="margin-left:10px;">
+    <input type="radio" name="unit_system" value="metric" checked onclick="setUnitSystem('metric')">
+    Metric (SI)
+  </label>
+  <label style="margin-left:14px;">
+    <input type="radio" name="unit_system" value="imperial" onclick="setUnitSystem('imperial')">
+    Imperial (US)
+  </label>
+  <span class="hint" id="unit_bar_hint" style="margin-left:12px;">m/s · Pa · K · m · J/kg·K</span>
+</div>
+
+<div id="fidelity_bar" role="group" aria-label="CFD fidelity mode">
+  <div class="fid-title">CFD fidelity mode</div>
+  <div class="fid-row">
+    <label class="fid-opt">
+      <input type="radio" name="fidelity_mode" value="fast" checked
+             onchange="onFidelityModeChange('fast')">
+      Fast (design board)
+    </label>
+    <label class="fid-opt">
+      <input type="radio" name="fidelity_mode" value="balanced"
+             onchange="onFidelityModeChange('balanced')">
+      Balanced
+    </label>
+    <label class="fid-opt">
+      <input type="radio" name="fidelity_mode" value="accurate"
+             onchange="onFidelityModeChange('accurate')">
+      High accuracy
+    </label>
+    <span style="font-size:13px;">Detail:</span>
+    <input type="range" id="fidelity_level" name="fidelity_level" min="0" max="100" value="0" step="5"
+           oninput="onFidelitySlider(this.value)" title="0 = fast · 50 = balanced · 100 = high accuracy">
+    <span id="fidelity_readout">L0 · Fast · nx=80×40</span>
+  </div>
+  <span id="fidelity_hint">
+    Quick mesh/solve for design iteration. Coarse grid, short run.
+  </span>
+</div>
+<span class="meta">
+  Design a pure-impulse blade from velocity triangles, shape the metal (lines · arcs · fillets),
+  then run a 2D cascade CFD “bench test” (mesh → flow solve → surface pressure / video).
+  <br>
+  Layout style after the
+  <a href="https://devenport.aoe.vt.edu/aoe3114/calc.html" target="_parent">Compressible Aerodynamics Calculator</a>
+  (Devenport, Virginia Tech AOE). Perfect gas · angles in degrees ·
+  <span id="unit_meta_line">SI units (backend always SI; display converts).</span>
+  <br>
+  <b>Pipeline:</b> each section builds on the last — §1 flow angles → §2 metal → §3 case files → §4 CFD → §5–6 results.
+</span>
+
+<div id="server_banner"></div>
+<div id="pipeline_banner">§1 triangles…  →  §2 blade…  →  §3 case…  →  §4 CFD…  →  §5 surface p…  →  §6 losses…  →  §7 export</div>
+
+<div id="long_job_panel" aria-live="polite" role="status">
+  <div class="lj-title"><span class="lj-pulse">●</span> <span id="long_job_title">Long job running…</span></div>
+  <div class="lj-line" id="long_job_heartbeat">Waiting…</div>
+  <div class="lj-line">
+    Elapsed: <b id="long_job_elapsed">0:00</b>
+    &nbsp;·&nbsp; Est. remaining: <b id="long_job_eta">—</b>
+    &nbsp;·&nbsp; <span id="long_job_pct">0%</span>
+  </div>
+  <div class="lj-line" id="long_job_detail"></div>
+  <div id="long_job_bar_wrap"><div id="long_job_bar"></div></div>
+  <div class="hint" style="margin-top:6px;">
+    Keep this tab open. Moving progress / ticking elapsed means it is <b>not stuck</b>.
+    High-accuracy solves can take tens of minutes to hours.
+  </div>
+</div>
+
+<hr>
+
+<!-- ========== 1. Mean-line ========== -->
+<form name="meanline">
+  <span class="sec" id="sec1">1 · Gas conditions &amp; velocity triangles</span>
+  <div class="howto">
+    <b>What this step is for</b><br>
+    Pick the <i>inlet relative FLOW</i> the stage is designed for (velocity triangles), the
+    machine identity (r_m, rpm, span → U, ṁ, power), and metal–flow mismatch (incidence / deviation).
+    <br><br>
+    <b>Angle convention:</b> β₁/β₂ below are <b>design flow</b> angles. Metal angles for §2 are
+    β₁* = β₁ − i and β₂* = β₂ + δ. Triangles use flow; geometry uses metal.
+    <br><br>
+    <b>Feeds §2–6:</b> flow + metal angles, U, chord, solidity, |W₁|, p₁, T₁, r_m/rpm/span, ṁ/power, design name.
+    <ol>
+      <li>Enter gas, flow angles, |W₁|, and either free U or U from rpm·r_m.</li>
+      <li>Set span (and optional ṁ or power target) for stage capacity.</li>
+      <li>Press <b>Update triangles</b> — check Mach, Euler work, tip Mach, ṁ/power.</li>
+    </ol>
+  </div>
+
+  Perfect gas,
+  γ =
+  <input type="text" name="gamma" value="1.30" size="6" onchange="onMeanlineChange()">,
+  R =
+  <input type="text" name="R" value="320" size="6" data-unit="Rgas" onchange="onMeanlineChange()">
+  <span class="u-lab" data-u="Rgas">J/kg·K</span>.
+  Angles in degrees. Relative frame: W = C − U.
+
+  <ul class="block">
+    <b>DESIGN FLOW ANGLES (velocity triangles):</b>
+    <div class="row">
+      Flow inlet angle β₁ =
+      <input type="text" name="beta1" value="72.0" size="8" onchange="toggleBeta2(this.form); onMeanlineChange()">
+      deg
+      &nbsp;
+      <label>
+        <input type="checkbox" name="pure" checked onclick="toggleBeta2(this.form); onMeanlineChange()">
+        Pure impulse (β₂ = −β₁, reaction r ≈ 0)
+      </label>
+      &nbsp; Flow exit angle β₂ =
+      <input type="text" name="beta2" value="-72.0" size="8" disabled onchange="onMeanlineChange()">
+      deg
+    </div>
+    <div class="row">
+      Incidence i =
+      <input type="text" name="incidence" value="0" size="6" onchange="onMeanlineChange()">
+      deg
+      &nbsp; Deviation δ =
+      <input type="text" name="deviation" value="0" size="6" onchange="onMeanlineChange()">
+      deg
+      &nbsp; <span class="hint">metal β₁*=β₁−i · metal β₂*=β₂+δ (shown in outputs)</span>
+    </div>
+    <div class="row">
+      |W₁| =
+      <input type="text" name="w1" value="950" size="8" data-unit="vel" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="vel">m/s</span>
+      &nbsp; p₁ =
+      <input type="text" name="p1" value="550000" size="12" data-unit="press" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="press">Pa</span>
+      &nbsp; T₁ =
+      <input type="text" name="T1" value="1100" size="8" data-unit="temp" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="temp">K</span>
+      &nbsp; μ =
+      <input type="text" name="mu" value="4.5e-5" size="10" data-unit="visc" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="visc">Pa·s</span>
+    </div>
+
+    <b>MACHINE / STAGE (flight knobs):</b>
+    <div class="row">
+      Mean radius r_m =
+      <input type="text" name="r_m" value="0.0375" size="8" data-unit="len" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="len">m</span>
+      <span class="hint">(tip 0.04 · hub 0.035)</span>
+      &nbsp; rpm =
+      <input type="text" name="rpm" value="0" size="8" onchange="onMeanlineChange()">
+      &nbsp;
+      <label>
+        <input type="checkbox" name="u_from_rpm" onclick="onMeanlineChange()">
+        U from rpm·r_m
+      </label>
+      &nbsp; Blade speed U =
+      <input type="text" name="U" value="450" size="8" data-unit="vel" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="vel">m/s</span>
+    </div>
+    <div class="row">
+      Span h =
+      <input type="text" name="span" value="0.005" size="8" data-unit="len" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="len">m</span>
+      <span class="hint">(tip−hub)</span>
+      &nbsp; ṁ target =
+      <input type="text" name="mdot" value="0" size="10" data-unit="mdot" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="mdot">kg/s</span>
+      &nbsp; Power target =
+      <input type="text" name="power" value="0" size="10" data-unit="power" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="power">W</span>
+      &nbsp; <span class="hint">0 = free (compute from annulus / Euler)</span>
+    </div>
+    <div class="row">
+      Chord c =
+      <input type="text" name="chord" value="0.01" size="8" data-unit="len" onchange="onMeanlineChange()">
+      <span class="u-lab" data-u="len">m</span>
+      &nbsp; Blade spacing s =
+      <input type="text" name="pitch" value="0.008796" size="10" data-unit="len"
+             onchange="onPitchChange(this.form)" title="Pitch between blades — how close they sit">
+      <span class="u-lab" data-u="len">m</span>
+      &nbsp; Solidity σ = c/s =
+      <input type="text" name="solidity" value="1.13688" size="8"
+             onchange="onSolidityChange(this.form)" title="σ = chord / spacing">
+      <span class="hint">(Z=25 wheel · closer blades → higher σ)</span>
+      &nbsp; y⁺ target =
+      <input type="text" name="yplus" value="1.0" size="6">
+      &nbsp; Design name =
+      <input type="text" name="blade_name" value="user_stage_r040" size="16">
+      &nbsp;
+      <input type="button" value="Update triangles" onclick="onMeanlineChange()">
+    </div>
+    <div class="row">
+      <span class="lab">Blade packing (s/c)</span>
+      <input type="range" name="pitch_sc" min="0.4" max="2.0" step="0.01" value="0.88"
+             oninput="onPitchScSlider(this.form)"
+             title="Spacing / chord — lower = blades closer together">
+      <input type="text" name="pitch_sc_v" size="6" value="0.88" readonly>
+      <span class="hint">drag left → blades closer (higher σ) · right → more open</span>
+    </div>
+    <div class="hint">
+      β = relative flow angle · β* = metal · α = absolute (C) · positive θ is swirl.
+      Pure impulse: |W₂|≈|W₁| and β₂≈−β₁. When “U from rpm·r_m” is on, U = Ω·r_m with Ω=2π·rpm/60.
+      ṁ from annulus ≈ ρ·C_a·2π r_m h unless a ṁ or power target is set.
+      <b>Spacing s</b> and <b>solidity σ</b> stay locked together (σ = c/s); both drive the cascade pitch that is meshed.
+    </div>
+
+    <table border>
+      <tr>
+        <th>β₁=</th><th><input type="text" name="out_beta1" size="12"></th>
+        <th></th>
+        <th>β₂=</th><th><input type="text" name="out_beta2" size="12"></th>
+        <th></th>
+        <th>α₁=</th><th><input type="text" name="out_alpha1" size="12"></th>
+        <th></th>
+        <th>α₂=</th><th><input type="text" name="out_alpha2" size="12"></th>
+      </tr>
+      <tr>
+        <th>|W₁| <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_W1" size="12"></th>
+        <th></th>
+        <th>|W₂| <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_W2" size="12"></th>
+        <th></th>
+        <th>|C₁| <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_C1" size="12"></th>
+        <th></th>
+        <th>|C₂| <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_C2" size="12"></th>
+      </tr>
+      <tr>
+        <th>U <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_U" size="12"></th>
+        <th></th>
+        <th>C<sub>θ1</sub> <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_Ct1" size="12"></th>
+        <th></th>
+        <th>C<sub>θ2</sub> <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_Ct2" size="12"></th>
+        <th></th>
+        <th>C<sub>a1</sub> <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_Ca1" size="12"></th>
+      </tr>
+      <tr>
+        <th>M<sub>w1</sub>=</th><th><input type="text" name="out_Mw1" size="12"></th>
+        <th></th>
+        <th>M<sub>c1</sub>=</th><th><input type="text" name="out_Mc1" size="12"></th>
+        <th></th>
+        <th>M<sub>w2</sub>=</th><th><input type="text" name="out_Mw2" size="12"></th>
+        <th></th>
+        <th>a₁ <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_a" size="12"></th>
+      </tr>
+      <tr>
+        <th>Degree of reaction <i>r</i>=</th><th><input type="text" name="out_r" size="12"></th>
+        <th></th>
+        <th>Euler work <span class="u-lab" data-u="espec">J/kg</span>=</th><th><input type="text" name="out_euler" size="12"></th>
+        <th></th>
+        <th>φ=C<sub>a</sub>/U=</th><th><input type="text" name="out_phi" size="12"></th>
+        <th></th>
+        <th>ψ=Δh₀/U²=</th><th><input type="text" name="out_psi" size="12"></th>
+      </tr>
+      <tr>
+        <th>η proxy=</th><th><input type="text" name="out_eta" size="12"></th>
+        <th></th>
+        <th>ρ₁ <span class="u-lab" data-u="dens">kg/m³</span>=</th><th><input type="text" name="out_rho1" size="12"></th>
+        <th></th>
+        <th>y⁺ first layer <span class="u-lab" data-u="len">m</span>=</th><th><input type="text" name="out_y_m" size="12"></th>
+        <th></th>
+        <th>y⁺ first layer <span class="u-lab" data-u="len_um">μm</span>=</th><th><input type="text" name="out_y_um" size="12"></th>
+      </tr>
+      <tr>
+        <th>metal β₁*=</th><th><input type="text" name="out_metal_b1" size="12"></th>
+        <th></th>
+        <th>metal β₂*=</th><th><input type="text" name="out_metal_b2" size="12"></th>
+        <th></th>
+        <th>ṁ <span class="u-lab" data-u="mdot">kg/s</span>=</th><th><input type="text" name="out_mdot" size="12"></th>
+        <th></th>
+        <th>Power <span class="u-lab" data-u="power">W</span>=</th><th><input type="text" name="out_power" size="12"></th>
+      </tr>
+      <tr>
+        <th>tip M≈</th><th><input type="text" name="out_tip_m" size="12"></th>
+        <th></th>
+        <th>tip U <span class="u-lab" data-u="vel">m/s</span>=</th><th><input type="text" name="out_tip_u" size="12"></th>
+        <th></th>
+        <th>A_ann <span class="u-lab" data-u="area">m²</span>=</th><th><input type="text" name="out_annulus" size="12"></th>
+        <th></th>
+        <th>rpm (used)=</th><th><input type="text" name="out_rpm" size="12"></th>
+      </tr>
+    </table>
+    <div class="hint">Velocity triangles (drawn when you update §1):</div>
+    <div id="tri_svg">Loading triangles…</div>
+  </ul>
+</form>
+
+<hr>
+
+<!-- ========== 2. Impulse turbine design (sliders first) ========== -->
+<form name="bladeform">
+  <span class="sec" id="sec2">2 · Impulse turbine design</span>
+  <div class="howto">
+    <b>Primary controls = sliders</b> for every metal and packing dimension that shapes the outline.
+    Two arcs (upper + lower) meet at LE/TE; solid is the band between them. Cascade: upper of one blade
+    faces lower of the next across pitch <i>s</i>.
+    <br>
+    <b>After the outline</b> are full design factors (duty, triangles, nozzle, admission, clearances, limits).
+    Those feed meanline / capacity / reports; the dual-arc outline still drives the §3 mesh wall.
+  </div>
+
+  <div class="inherit" id="sec2_from1">
+    <span class="ttl">Live from §1 meanline:</span>
+    β₁ = <input type="text" id="from1_beta1" size="7" readonly>
+    · β₂ = <input type="text" id="from1_beta2" size="7" readonly>
+    · metal β₁* = <input type="text" id="from1_metal_b1" size="7" readonly>
+    · β₂* = <input type="text" id="from1_metal_b2" size="7" readonly>
+    · W₁ = <input type="text" id="from1_W1" size="9" readonly>
+    · M<sub>W1</sub> = <input type="text" id="from1_Mw1" size="7" readonly>
+    · name = <input type="text" id="from1_name" size="12" readonly>
+  </div>
+
+  <ul class="block">
+    <!-- ========== A: SLIDER DIMENSIONS (main mode) ========== -->
+    <div class="row" style="padding:10px; background:#e8f4ea; border:2px solid #2a6a3a; margin-bottom:8px;">
+      <b style="font-size:15px;">A · Dimension sliders</b>
+      <span class="hint"> — live metal outline · all /c relative to chord unless noted</span>
+      <input type="hidden" name="profile_family" value="impulse_bucket">
+      <input type="hidden" name="thk" value="0.20"><input type="hidden" name="thk_v" value="0.20">
+      <input type="hidden" name="bulge" value="1.10"><input type="hidden" name="bulge_v" value="1.10">
+      <input type="hidden" name="wall_t" value="0.20"><input type="hidden" name="wall_t_v" value="0.20">
+      <input type="hidden" name="suction_cut" value="0"><input type="hidden" name="suction_cut_v" value="0">
+      <input type="hidden" name="line_in" value="0"><input type="hidden" name="line_in_v" value="0">
+      <input type="hidden" name="line_out" value="0"><input type="hidden" name="line_out_v" value="0">
+      <input type="hidden" name="camber_dist" value="0.5"><input type="hidden" name="camber_dist_v" value="0.5">
+      <input type="hidden" name="le_shape" value="circular">
+      <input type="hidden" name="peak" value="0.50"><input type="hidden" name="peak_v" value="0.50">
+      <input type="hidden" name="te" value="0"><input type="hidden" name="te_v" value="0">
+
+      <div style="margin-top:8px; padding:6px 8px; background:#d8f0dc; border:1px solid #5a8;">
+        <b>A1 · Blade metal (two arcs)</b>
+        <div class="row" style="margin-top:6px;">
+          Upper surface h<sub>u</sub>/c
+          <input type="range" name="upper_h" min="0.15" max="0.65" step="0.005" value="0.48"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="upper_h_v" size="5" value="0.48" onchange="onDimText('upper_h')">
+          <span class="hint">≈0.50 semi-circle outer</span>
+        </div>
+        <div class="row">
+          Lower surface h<sub>l</sub>/c
+          <input type="range" name="lower_h" min="0.02" max="0.55" step="0.005" value="0.28"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="lower_h_v" size="5" value="0.28" onchange="onDimText('lower_h')">
+          <span class="hint">cavity · mid t/c ≈ h<sub>u</sub>−h<sub>l</sub></span>
+        </div>
+        <div class="row">
+          LE fillet r/c
+          <input type="range" name="le" min="0" max="0.12" step="0.002" value="0"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="le_v" size="5" value="0" onchange="onDimText('le')">
+          · TE fillet r/c
+          <input type="range" name="te_fillet" min="0" max="0.12" step="0.002" value="0"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="te_fillet_v" size="5" value="0" onchange="onDimText('te_fillet')">
+          <span class="hint">0 = sharp · cap diameter ≤ pitch gap</span>
+        </div>
+        <div class="row">
+          TE thickness t<sub>TE</sub>/c
+          <input type="range" name="te_thk" min="0" max="0.08" step="0.002" value="0.02"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="te_thk_v" size="5" value="0.02" onchange="onDimText('te_thk')">
+          · TE wedge
+          <input type="range" name="te_wedge" min="0" max="30" step="1" value="12"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="te_wedge_v" size="4" value="12" onchange="onDimText('te_wedge')"> °
+          · Min wall t<sub>min</sub>/c
+          <input type="range" name="t_min_c" min="0.02" max="0.25" step="0.005" value="0.08"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="t_min_c_v" size="5" value="0.08" onchange="onDimText('t_min_c')">
+        </div>
+      </div>
+
+      <div style="margin-top:8px; padding:6px 8px; background:#dde8f8; border:1px solid #58a;">
+        <b>A2 · Cascade packing</b>
+        <div class="row" style="margin-top:6px;">
+          Chord c
+          <input type="range" name="chord_mm" min="5" max="80" step="0.5" value="40"
+                 oninput="onChordSlider(this)">
+          <input type="text" name="chord_c" value="0.04" size="8" data-unit="len"
+                 onchange="onChordText(); onBladeChange()">
+          <span class="u-lab" data-u="len">m</span>
+          <span class="hint">slider = mm · text = m</span>
+        </div>
+        <div class="row">
+          Solidity σ = c/s
+          <input type="range" name="solidity_sl" min="0.6" max="2.5" step="0.02" value="1.20"
+                 oninput="onSoliditySlider(this)">
+          <input type="text" name="solidity_sig" value="1.20" size="6"
+                 onchange="onSolidityManual()">
+          · Blade count Z
+          <input type="range" name="Z_sl" min="12" max="120" step="1" value="60"
+                 oninput="onZSlider(this)">
+          <input type="text" name="Z" value="60" size="5" onchange="onZText(); onBladeChange()">
+        </div>
+        <div class="row">
+          Pitch s
+          <input type="text" name="pitch_s" value="" size="10" data-unit="len" onchange="onPitchManual()">
+          <span class="u-lab" data-u="len">m</span>
+          · Stagger λ
+          <input type="range" name="stagger_sl" min="-20" max="20" step="0.5" value="0"
+                 oninput="onStaggerSlider(this)">
+          <input type="text" name="stagger" value="" size="6" placeholder="auto"
+                 onchange="onBladeChange()"> °
+          <span class="hint">0 on slider + blank text = auto ½(β₁*+β₂*)</span>
+          · Throat o/s target
+          <input type="range" name="os_sl" min="0.15" max="0.70" step="0.01" value="0.35"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="os_target" value="0.35" size="5" onchange="onDimText('os_sl')">
+        </div>
+        <div class="row">
+          Mean r<sub>m</sub>
+          <input type="range" name="rm_mm" min="20" max="500" step="1" value="425"
+                 oninput="onRmSlider(this)">
+          <input type="text" name="rm" value="0.425" size="8" data-unit="len"
+                 onchange="onRmText(); onLpreChange(); onBladeChange()">
+          <span class="u-lab" data-u="len">m</span>
+          · Tip r<sub>t</sub>
+          <input type="text" name="rt" value="0.45" size="8" data-unit="len"
+                 onchange="onLpreChange(); onBladeChange()">
+          · Hub r<sub>h</sub>
+          <input type="text" name="rh" value="0.40" size="8" data-unit="len"
+                 onchange="onLpreChange(); onBladeChange()">
+          · Span h <input type="text" name="span_h" value="0.05" size="8" data-unit="len" readonly>
+          · h/c <input type="text" name="aspect" value="" size="6" readonly>
+        </div>
+        <div class="row">
+          Hub/tip ratio
+          <input type="range" name="hub_tip_sl" min="0.70" max="0.98" step="0.005" value="0.889"
+                 oninput="onHubTipSlider(this)">
+          <input type="text" name="hub_tip" value="0.889" size="6" readonly>
+          · Aspect target h/c
+          <input type="range" name="aspect_sl" min="0.3" max="3.0" step="0.05" value="1.25"
+                 oninput="onAspectSlider(this)">
+          <input type="text" name="aspect_tgt" value="1.25" size="5" onchange="onAspectText()">
+          <span class="hint">moves span via r<sub>t</sub>−r<sub>h</sub> at fixed r<sub>m</sub></span>
+        </div>
+      </div>
+
+      <div style="margin-top:8px; padding:6px 8px; background:#f8ecd8; border:1px solid #a86;">
+        <b>A3 · Clearance &amp; gap sliders</b>
+        <div class="row" style="margin-top:6px;">
+          Tip clr δ<sub>tip</sub>/h %
+          <input type="range" name="tip_clr_pct_sl" min="0.2" max="4.0" step="0.05" value="2.0"
+                 oninput="onTipClrPctSlider(this)">
+          <input type="text" name="tip_clr_pct" value="2.0" size="5" onchange="onTipClrPctText()">
+          · δ<sub>tip</sub>
+          <input type="text" name="tip_clr" value="0.001" size="8" data-unit="len"
+                 onchange="onLpreChange()">
+          <span class="u-lab" data-u="len">m</span>
+          · Axial gap g<sub>x</sub>/c
+          <input type="range" name="axial_gap_c" min="0.05" max="0.50" step="0.01" value="0.15"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="axial_gap_c_v" size="5" value="0.15" onchange="onDimText('axial_gap_c')">
+          · g<sub>x</sub>
+          <input type="text" name="axial_gap" value="0.006" size="8" data-unit="len" onchange="onLpreChange()">
+          <span class="u-lab" data-u="len">m</span>
+        </div>
+        <div class="row">
+          Hub seal clr /h %
+          <input type="range" name="hub_seal_pct" min="0" max="3" step="0.05" value="0.5"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="hub_seal_pct_v" size="5" value="0.5" onchange="onDimText('hub_seal_pct')">
+          · Root fillet r<sub>root</sub>/c
+          <input type="range" name="root_fillet_c" min="0" max="0.15" step="0.005" value="0.04"
+                 oninput="onDimSlider(this)">
+          <input type="text" name="root_fillet_c_v" size="5" value="0.04" onchange="onDimText('root_fillet_c')">
+        </div>
+      </div>
+
+      <div class="row" id="arc_derived" style="font-family:ui-monospace,Consolas,monospace; font-size:12px; background:#f6fff6; padding:6px; border:1px solid #8a8; margin-top:8px;">
+        —
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="row" style="margin-top:4px; padding:8px; background:#f4f0e8; border:1px solid #975;">
+      <input type="button" value="Refresh preview" onclick="onBladeChange()" style="font-weight:700; padding:6px 14px;">
+      <input type="button" value="Apply design → §1" onclick="applyLpreDesign()"
+             title="Push packing, angles, gas into meanline">
+      Preview blades
+      <select name="n_prev" onchange="onBladeChange()">
+        <option value="1">1</option>
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+      </select>
+      · Shape presets
+      <input type="button" value="Sharp C-bucket" onclick="presetDualArcSharp()">
+      <input type="button" value="Mild fillets" onclick="presetDualArcFillet()">
+      <input type="button" value="Deep scoop" onclick="presetDualArcDeep()">
+      · Engine
+      <input type="button" value="F-1 class" onclick="presetLpreF1()">
+      <input type="button" value="H-1 class" onclick="presetLpreH1()">
+      <input type="button" value="Small GG" onclick="presetLpreSmallGG()">
+      <span class="hint" id="lpre_apply_msg"></span>
+      <span class="hint" id="preset_msg"></span>
+    </div>
+
+    <div class="row" style="margin-top:8px; padding:6px 8px; background:#ebe4f4; border:1px solid #756;">
+      <b>Cascade CFD domain</b>
+      inlet /c =
+      <input type="range" name="x_up_sl" min="0.2" max="2.0" step="0.05" value="0.5"
+             oninput="onDomainSlider('up')">
+      <input type="text" name="x_up_c" id="x_up_c_blade" value="0.5" size="5"
+             onchange="syncDomainExtents(this); onBladeChange()">
+      · outlet /c =
+      <input type="range" name="x_dn_sl" min="0.3" max="3.0" step="0.05" value="1.0"
+             oninput="onDomainSlider('dn')">
+      <input type="text" name="x_dn_c" id="x_dn_c_blade" value="1.0" size="5"
+             onchange="syncDomainExtents(this); onBladeChange()">
+      · o/s = <input type="text" id="blade_os_out" size="7" readonly>
+      · throat o = <input type="text" id="blade_o_out" size="9" readonly>
+      · c = <input type="text" id="from1_chord" size="8" readonly>
+      · s = <input type="text" id="from1_pitch" size="9" readonly>
+      · σ = <input type="text" id="from1_solidity" size="7" readonly>
+      · o/s§1 = <input type="text" id="from1_os" size="7" readonly>
+    </div>
+
+    <div id="blade_svg_wrap">
+      <svg id="blade_svg" width="780" height="400" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="blade_eng_panel" class="howto" style="max-width:780px; margin-top:6px; font-size:13px;">
+      <b>Engineering cascade readout</b>
+      <div id="blade_eng_readout" class="hint" style="font-style:normal; margin-top:4px;">
+        Drag dimension sliders — metal outline updates before mesh.
+      </div>
+    </div>
+    <div class="hint">
+      Black = metal · blue dashed = mid-arc · purple = CFD domain · green = inlet W₁ · orange = pitch s.
+    </div>
+
+    <!-- ========== DESIGN FACTORS AFTER DIMENSIONS ========== -->
+    <div style="margin-top:14px; padding:8px; background:#f0f0f4; border:1px solid #667;">
+      <b style="font-size:14px;">Design factors</b>
+      <span class="hint"> — duty, triangles, nozzle, admission, limits (after outline is set)</span>
+    </div>
+
+    <!-- B Duty -->
+    <details open style="margin-top:8px;">
+      <summary><b>B · Duty &amp; thermodynamics</b></summary>
+      <div class="row" style="margin-top:6px;">
+        Power target
+        <input type="text" name="lpre_power_w" value="0" size="10" data-unit="power" onchange="onLpreChange()">
+        <span class="u-lab" data-u="power">W</span>
+        · ṁ
+        <input type="text" name="lpre_mdot" value="0" size="8" data-unit="mdot" onchange="onLpreChange()">
+        <span class="u-lab" data-u="mdot">kg/s</span>
+        · rpm
+        <input type="text" name="lpre_rpm" value="5500" size="8" onchange="onLpreChange()">
+        · η<sub>ts</sub> target
+        <input type="range" name="eta_ts" min="0.40" max="0.90" step="0.01" value="0.65"
+               oninput="onDimSlider(this)">
+        <input type="text" name="eta_ts_v" size="5" value="0.65" onchange="onDimText('eta_ts')">
+      </div>
+      <div class="row">
+        p₀ inlet
+        <input type="text" name="lpre_p0" value="550000" size="10" data-unit="press" onchange="onLpreChange()">
+        <span class="u-lab" data-u="press">Pa</span>
+        · T₀
+        <input type="text" name="lpre_T0" value="1100" size="8" data-unit="temp" onchange="onLpreChange()">
+        <span class="u-lab" data-u="temp">K</span>
+        · PR = p₀/p<sub>ex</sub>
+        <input type="range" name="PR_sl" min="2" max="40" step="0.5" value="8"
+               oninput="onPRSlider(this)">
+        <input type="text" name="lpre_PR" value="8" size="5" onchange="onLpreChange()">
+        · p<sub>ex</sub>
+        <input type="text" name="p_ex" value="" size="10" data-unit="press" readonly>
+        <span class="u-lab" data-u="press">Pa</span>
+      </div>
+      <div class="row">
+        γ
+        <input type="text" name="lpre_gamma" value="1.3" size="5" onchange="onLpreChange()">
+        · R
+        <input type="text" name="lpre_R" value="320" size="6" onchange="onLpreChange()"> J/(kg·K)
+        · MW (optional)
+        <input type="text" name="mw_gas" value="" size="6" placeholder="auto" onchange="onLpreChange()">
+        · Gas note
+        <input type="text" name="gas_note" value="GG products" size="16" onchange="onLpreChange()">
+      </div>
+    </details>
+
+    <!-- C Triangles -->
+    <details open style="margin-top:6px;">
+      <summary><b>C · Velocity triangles &amp; loading</b></summary>
+      <div class="row" style="margin-top:6px;">
+        U/c₀
+        <input type="range" name="u_over_c0" min="0.15" max="0.55" step="0.01" value="0.30"
+               oninput="onDimSlider(this); onLpreChange()">
+        <input type="text" name="u_over_c0_v" size="5" value="0.30" onchange="onDimText('u_over_c0'); onLpreChange()">
+        · Flow φ = C<sub>a</sub>/U
+        <input type="range" name="phi_sl" min="0.15" max="0.70" step="0.01" value="0.35"
+               oninput="onPhiSlider(this)">
+        <input type="text" name="phi" value="0.35" size="5" onchange="onLpreChange()">
+        · Loading ψ
+        <input type="text" name="psi" value="" size="6" placeholder="auto" onchange="onLpreChange()">
+        · Zweifel Z<sub>w</sub>
+        <input type="range" name="zw_sl" min="0.5" max="1.4" step="0.02" value="0.90"
+               oninput="onZwSlider(this)">
+        <input type="text" name="zweifel" value="0.9" size="5" onchange="onLpreChange()">
+        <input type="button" value="Pack Z from Z_w" onclick="packFromZweifel()">
+      </div>
+      <div class="row">
+        β₁ flow
+        <input type="range" name="beta1_sl" min="40" max="85" step="0.5" value="72"
+               oninput="onBetaSlider(1)">
+        <input type="text" name="lpre_beta1" value="72" size="6" onchange="onLpreChange()"> °
+        · β₂ flow
+        <input type="range" name="beta2_sl" min="-85" max="-40" step="0.5" value="-72"
+               oninput="onBetaSlider(2)">
+        <input type="text" name="lpre_beta2" value="-72" size="6" onchange="onLpreChange()"> °
+        · Incidence i
+        <input type="range" name="inc_sl" min="-8" max="8" step="0.5" value="0"
+               oninput="onIncDevSlider('inc')">
+        <input type="text" name="lpre_inc" value="0" size="5" onchange="onLpreChange()"> °
+        · Deviation δ
+        <input type="range" name="dev_sl" min="0" max="8" step="0.5" value="0"
+               oninput="onIncDevSlider('dev')">
+        <input type="text" name="lpre_dev" value="0" size="5" onchange="onLpreChange()"> °
+      </div>
+      <div class="row">
+        |W₁|
+        <input type="text" name="lpre_w1" value="950" size="8" data-unit="vel" onchange="onLpreChange()">
+        <span class="u-lab" data-u="vel">m/s</span>
+        · Reaction r
+        <input type="range" name="reaction_sl" min="0" max="0.5" step="0.02" value="0"
+               oninput="onReactionSlider(this)">
+        <input type="text" name="reaction" value="0" size="5" onchange="onLpreChange()">
+        · c₀ (derived)
+        <input type="text" name="c0_out" value="" size="8" data-unit="vel" readonly>
+        · U from U/c₀
+        <input type="text" name="U_uoc_out" value="" size="8" data-unit="vel" readonly>
+        · U = Ω r<sub>m</sub>
+        <input type="text" name="U_rm_out" value="" size="8" data-unit="vel" readonly>
+      </div>
+    </details>
+
+    <!-- D Nozzle -->
+    <details open style="margin-top:6px;">
+      <summary><b>D · Nozzle row &amp; admission</b></summary>
+      <div class="row" style="margin-top:6px;">
+        <label><input type="checkbox" name="partial_admission" checked onchange="onLpreChange()"> Partial admission</label>
+        · ε arc fraction
+        <input type="range" name="eps_sl" min="0.10" max="1.0" step="0.02" value="0.35"
+               oninput="onEpsSlider(this)">
+        <input type="text" name="epsilon" value="0.35" size="5" onchange="onLpreChange()">
+        · Sectors N<sub>sec</sub>
+        <input type="range" name="n_sec_sl" min="1" max="12" step="1" value="4"
+               oninput="onDimSlider(this)">
+        <input type="text" name="n_sectors" value="4" size="4" onchange="onDimText('n_sec_sl')">
+        · Nozzles Z<sub>n</sub>
+        <input type="text" name="n_nozzles" value="6" size="4" onchange="onLpreChange()">
+      </div>
+      <div class="row">
+        Nozzle exit M<sub>n</sub>
+        <input type="range" name="Mn_sl" min="1.0" max="3.0" step="0.05" value="1.80"
+               oninput="onMnSlider(this)">
+        <input type="text" name="Mn_exit" value="1.8" size="5" onchange="onLpreChange()">
+        · A<sub>e</sub>/A*
+        <input type="range" name="AR_sl" min="1.0" max="4.0" step="0.05" value="1.80"
+               oninput="onARSlider(this)">
+        <input type="text" name="nozzle_AR" value="1.8" size="5" onchange="onLpreChange()">
+        · h<sub>n</sub>/h<sub>r</sub>
+        <input type="range" name="hn_sl" min="0.8" max="1.3" step="0.02" value="1.00"
+               oninput="onHnSlider(this)">
+        <input type="text" name="hn_over_hr" value="1.0" size="5" onchange="onLpreChange()">
+        · α₁ absolute
+        <input type="range" name="alpha1_sl" min="8" max="35" step="0.5" value="20"
+               oninput="onAlpha1Slider(this)">
+        <input type="text" name="alpha1" value="20" size="5" onchange="onLpreChange()"> °
+      </div>
+      <div class="row">
+        A* throat (capacity)
+        <input type="text" name="A_star" value="" size="10" data-unit="area" placeholder="auto" onchange="onLpreChange()">
+        <span class="u-lab" data-u="area">m²</span>
+        · A<sub>e</sub> exit
+        <input type="text" name="A_exit" value="" size="10" data-unit="area" readonly>
+        · Nozzle height h<sub>n</sub>
+        <input type="text" name="h_n" value="" size="8" data-unit="len" readonly>
+        <span class="hint" id="admission_hint"></span>
+      </div>
+    </details>
+
+    <!-- E Architecture -->
+    <details style="margin-top:6px;">
+      <summary><b>E · Architecture &amp; machine type</b></summary>
+      <div class="row" style="margin-top:6px;">
+        Type
+        <select name="turb_type" onchange="onLpreChange()">
+          <option value="axial_impulse" selected>Axial impulse (GG typical)</option>
+          <option value="axial_reaction">Axial reaction / expander-ish</option>
+          <option value="radial_inflow">Radial-inflow</option>
+          <option value="radial_bucket">Radial C-bucket wheel</option>
+        </select>
+        · Stages
+        <input type="text" name="n_stages" value="1" size="3" onchange="onLpreChange()">
+        · Velocity rows
+        <input type="range" name="n_rows_sl" min="1" max="3" step="1" value="1"
+               oninput="onRowsSlider(this)">
+        <input type="text" name="n_rows" value="1" size="3" onchange="onLpreChange()">
+        · Work split row1
+        <input type="range" name="work_split" min="0.4" max="1.0" step="0.05" value="1.0"
+               oninput="onDimSlider(this)">
+        <input type="text" name="work_split_v" size="5" value="1.0" onchange="onDimText('work_split')">
+        · <label><input type="checkbox" name="shrouded" onchange="onLpreChange()"> Shrouded rotor</label>
+      </div>
+    </details>
+
+    <!-- F Structural -->
+    <details style="margin-top:6px;">
+      <summary><b>F · Structural &amp; red-line checks</b> <span class="hint">(derived + limits)</span></summary>
+      <div class="row" style="margin-top:6px;">
+        U<sub>tip</sub> limit
+        <input type="text" name="U_tip_lim" value="450" size="8" data-unit="vel" onchange="onLpreChange()">
+        <span class="u-lab" data-u="vel">m/s</span>
+        · Tip Mach limit
+        <input type="text" name="M_tip_lim" value="1.2" size="5" onchange="onLpreChange()">
+        · Material density ρ<sub>m</sub>
+        <input type="text" name="rho_mat" value="7800" size="8" onchange="onLpreChange()"> kg/m³
+        · Allowable stress
+        <input type="text" name="sigma_allow" value="400e6" size="10" onchange="onLpreChange()"> Pa
+      </div>
+      <div class="row">
+        t<sub>mid</sub> abs
+        <input type="text" name="t_max_m" value="" size="8" data-unit="len" readonly>
+        · t<sub>min</sub> abs
+        <input type="text" name="t_min_m" value="" size="8" data-unit="len" readonly>
+        · t<sub>TE</sub> abs
+        <input type="text" name="t_te_m" value="" size="8" data-unit="len" readonly>
+        · tip Ø
+        <input type="text" name="tip_d" value="" size="8" data-unit="len" readonly>
+        · A<sub>ann</sub>
+        <input type="text" name="ann_A" value="" size="10" data-unit="area" readonly>
+      </div>
+      <div class="howto" style="margin-top:6px;">
+        <b>Full derived card</b>
+        <div id="lpre_derived" style="font-family:ui-monospace,Consolas,monospace; font-size:12px;">—</div>
+        <div id="design_limits" style="font-family:ui-monospace,Consolas,monospace; font-size:12px; margin-top:4px; color:#543;">—</div>
+      </div>
+    </details>
+  </ul>
+</form>
+
+
+<!-- ========== 3. Build cascade case ========== -->
+<form name="casegen">
+  <span class="sec" id="sec3">3 · Build cascade test article (OpenFOAM case files)</span>
+  <div class="howto">
+    <b>What this does</b><br>
+    Writes a 2D periodic cascade “wind tunnel” from <b>§1 flow</b> + <b>§2 metal</b> + the
+    <b>flow domain</b> extents below: inlet with relative velocity W₁ at β₁, cyclic pitch
+    boundaries, exit pressure, and the solid blade outline.
+    <b>This does not run CFD yet</b> — it only builds the folder of input files for §4.
+  </div>
+
+  <div class="inherit" id="sec3_from12">
+    <span class="ttl">From §1–2 (written into the case):</span>
+    <div>Design = <input type="text" id="from12_name" size="16" readonly>
+      · <span id="from12_beta">β₁/β₂ = …</span></div>
+    <div id="from12_flow">Flow BC = …</div>
+    <div id="from12_geom">Geometry = …</div>
+    <div id="from12_shape">Blade shape = …</div>
+    <div id="from12_domain">Domain = …</div>
+    <div class="stale-warn" id="case_stale_msg"></div>
+  </div>
+
+  <ul class="block">
+    <b>FLOW DOMAIN (cascade box):</b>
+    <div class="row">
+      Inlet length / c =
+      <input type="text" name="x_up_c" id="x_up_c_case" value="0.5" size="6"
+             onchange="syncDomainExtents(this); onCaseSettingsChange(); onBladeChange()">
+      &nbsp; Outlet length / c =
+      <input type="text" name="x_dn_c" id="x_dn_c_case" value="1.0" size="6"
+             onchange="syncDomainExtents(this); onCaseSettingsChange(); onBladeChange()">
+      &nbsp; <span class="hint" id="domain_abs_readout">—</span>
+    </div>
+    <div class="hint">
+      Chord frame: LE at x=0, TE at x=c. Domain x runs from −(inlet/c)·c to c+(outlet/c)·c.
+      Height = n_blades × pitch (cyclic top/bottom). Defaults 0.5c / 1.0c are typical for
+      impulse cascade tests; raise if shocks/reflections hit the boundaries.
+    </div>
+
+    <b>GRID / RUN SETTINGS:</b>
+    Num blades in domain =
+    <select name="n_blades" onchange="onCaseSettingsChange(); onBladeChange()">
+      <option selected>3</option><option>4</option><option>5</option>
+    </select>
+    <span class="hint">(cascade CFD passages; full wheel Z=25 via pitch from σ)</span>
+    &nbsp; nx =
+    <input type="text" name="nx" value="80" size="6" onchange="onCaseSettingsChange()">
+    &nbsp; ny =
+    <input type="text" name="ny" value="40" size="6" onchange="onCaseSettingsChange()">
+    &nbsp; endTime =
+    <input type="text" name="end_time" value="auto" size="10" onchange="onCaseSettingsChange()"
+           title="auto = startup-aware (~12 flow-through times). Or set e.g. 8e-4"> s
+    &nbsp;
+    <label title="Quiescent interior U=0; inlet W₁ drives fill (startup video)">
+      <input type="checkbox" name="startup_ics" checked onchange="onCaseSettingsChange()">
+      Startup ICs (no flow → steady)
+    </label>
+    &nbsp; Output dir =
+    <input type="text" name="output_dir" value="output" size="16" onchange="onCaseSettingsChange()">
+    &nbsp;
+    <input type="button" value="Build case files from §1–2" onclick="generateCase(this.form)">
+
+    <table border>
+      <tr>
+        <th>status=</th><th><input type="text" name="case_status_field" id="case_status" size="12"></th>
+        <th></th>
+        <th>message=</th><th><input type="text" name="case_msg" size="50"></th>
+      </tr>
+      <tr>
+        <th>case_dir=</th><th colspan="4"><input type="text" name="case_dir" size="80" onchange="propagateCaseDir(this.value)"></th>
+      </tr>
+      <tr>
+        <th>domain x=</th><th colspan="4"><input type="text" name="domain_x_out" id="domain_x_out" size="80" readonly></th>
+      </tr>
+    </table>
+    <div class="hint">
+      Case dir is filled by Build and passed to §4–6. y⁺ first-layer estimate from §1 is shown above for mesh sizing.
+      If you enlarge the domain a lot, increase nx (and ny) so cell size stays reasonable.
+    </div>
+  </ul>
+</form>
+
+<hr>
+
+<!-- ========== 4. Mesh & solver / turbine test ========== -->
+<form name="mesh">
+  <span class="sec" id="sec4">4 · Run the cascade CFD test (mesh → solve → sample)</span>
+  <div class="howto">
+    <b>What “testing the turbine” means here</b><br>
+    Runs CFD on the case folder built in <b>§3</b> (geometry from §2, BCs from §1).
+    You are not spinning a shaft in 3D — this is a <b>2D blade-to-blade cascade</b> test:
+    <i>given this metal and inlet relative flow, how does the gas load the blade?</i>
+    <ol>
+      <li><b>Mesh</b> — turn the §3 geometry into a grid (<code>blockMesh</code>).</li>
+      <li><b>Solve</b> — OpenFOAM-12 <code>foamRun -solver shockFluid</code> to the endTime from §3.</li>
+      <li><b>Sample</b> — surface pressure for §5 (PS/SS) and shock/loss analysis in §6.</li>
+    </ol>
+  </div>
+
+  <div class="inherit" id="sec4_from3">
+    <span class="ttl">From §3:</span>
+    Case dir = <input type="text" name="case_dir" id="from3_case_mesh" size="70" readonly>
+    <div class="stale-warn" id="mesh_stale_msg"></div>
+  </div>
+
+  <ul class="block">
+    <input type="button" value="1 · Mesh grid" onclick="runMesh(this.form)">
+    &nbsp;
+    <input type="button" value="2 · Run flow solve" onclick="runSolve(this.form)">
+    &nbsp;
+    <input type="button" value="3 · Sample surface p" onclick="runSample(this.form)">
+    &nbsp;
+    <input type="button" value="Run full test (mesh + solve + sample)" onclick="runFullTest(this.form)">
+    <br><br>
+    <div class="hint">
+      Requires a built §3 case. Full test can take minutes (or hours in High accuracy).
+      A yellow <b>progress panel</b> at the top shows elapsed time + ETA while mesh/solve run —
+      if the clock ticks, it is not stuck. Mesh must succeed before solve.
+      If you change §1 or §2, rebuild §3 first — this section will warn when the case is stale.
+    </div>
+
+    <table border>
+      <tr>
+        <th>mesh=</th><th><input type="text" name="wf_mesh" size="12"></th>
+        <th></th>
+        <th>flow solve=</th><th><input type="text" name="wf_solver" size="12"></th>
+        <th></th>
+        <th>video=</th><th><input type="text" name="wf_video" size="12"></th>
+      </tr>
+      <tr>
+        <th>pipeline=</th><th colspan="7"><input type="text" name="wf_label" size="70"></th>
+      </tr>
+      <tr>
+        <th>mesh ok=</th><th><input type="text" name="mesh_ok" size="12"></th>
+        <th></th>
+        <th>mesh message=</th><th colspan="4"><input type="text" name="mesh_msg" size="50"></th>
+      </tr>
+      <tr>
+        <th>solve ok=</th><th><input type="text" name="solve_ok" size="12"></th>
+        <th></th>
+        <th>solve message=</th><th colspan="4"><input type="text" name="solve_msg" size="50"></th>
+      </tr>
+      <tr>
+        <th>sample=</th><th colspan="7"><input type="text" name="sample_msg" size="70"></th>
+      </tr>
+      <tr>
+        <th>mesh job=</th><th><input type="text" id="mesh_status" size="12"></th>
+        <th></th>
+        <th>solve job=</th><th colspan="4"><input type="text" id="solve_status" size="12"></th>
+      </tr>
+    </table>
+  </ul>
+</form>
+
+<hr>
+
+<!-- ========== 5–7 DESIGN REVIEW (dense CFD board) ========== -->
+<form name="cpform">
+  <span class="sec" id="sec5">5 · CFD design board — load report (surface · metrics · shocks · fixes)</span>
+  <div class="howto">
+    <b>Purpose (flight-ready iteration)</b><br>
+    This is the design-review output of the cascade CFD: dense PS/SS pressure,
+    scalar metrics board, loading split, shock candidates, ranked loss fixes mapped to
+    §1–2 knobs. Change geometry/flow → rebuild §3 → re-solve §4 → <b>Build design report</b> again
+    and compare packages offline.
+    <br><br>
+    Data source: OpenFOAM surface sample when §4 succeeded; otherwise honest synthetic
+    high-Mach Cp (flagged in source) so the loss board still drives iteration.
+  </div>
+  <div class="inherit">
+    <span class="ttl">From §1 + §3–4:</span>
+    Case dir = <input type="text" name="case_dir" id="from3_case_cp" size="60" readonly>
+    &nbsp; source = <input type="text" name="cp_source" size="22" readonly>
+    &nbsp; p<sub>ref</sub> = <input type="text" name="cp_pref" size="12" readonly>
+    &nbsp; q<sub>ref</sub> = <input type="text" name="cp_qref" size="12" readonly>
+  </div>
+  <ul class="block">
+    <input type="button" value="Build full design report" onclick="loadDesignReport()">
+    &nbsp;
+    <input type="button" value="Re-analyze after design change" onclick="runLossAnalysis()">
+    &nbsp;
+    <input type="button" value="Download PS/SS CSV" onclick="downloadSurfaceCsv()">
+    &nbsp;
+    <input type="button" value="Download stations CSV" onclick="downloadStationsCsv()">
+    <br><br>
+    <div class="hint">
+      Re-analyze always re-reads <b>current §1–2 knobs</b> (force design-model surface unless you just finished a full OF solve).
+      Summary line shows <b>Δ</b> vs the previous report so you can confirm numbers moved.
+    </div>
+    <div class="hint" id="report_summary_line">summary — run Build full design report</div>
+    <input type="hidden" name="cp_csv" id="cp_csv_hidden">
+  </ul>
+
+  <span class="sec" style="font-size:16px;">5a · Metrics → pick fixes → re-analyze here (no scrolling)</span>
+  <div id="metrics_grid" class="metrics-grid">
+    <div class="metric-card"><span class="k">η_design proxy</span><span class="v" id="m_eta">—</span></div>
+    <div class="metric-card"><span class="k">η_meanline</span><span class="v" id="m_eta_ml">—</span></div>
+    <div class="metric-card"><span class="k">surface loss penalty</span><span class="v" id="m_penalty">—</span></div>
+    <div class="metric-card"><span class="k">Mw1</span><span class="v" id="m_mw1">—</span></div>
+    <div class="metric-card"><span class="k">Euler work</span><span class="v" id="m_euler">—</span></div>
+    <div class="metric-card"><span class="k">ψ stage loading</span><span class="v" id="m_psi">—</span></div>
+    <div class="metric-card"><span class="k">∫ΔCp loading</span><span class="v" id="m_load">—</span></div>
+    <div class="metric-card"><span class="k">load F/M/A</span><span class="v" id="m_load_split">—</span></div>
+    <div class="metric-card"><span class="k">SS peak Cp</span><span class="v" id="m_ss_peak">—</span></div>
+    <div class="metric-card"><span class="k">SS peak x/c</span><span class="v" id="m_ss_x">—</span></div>
+    <div class="metric-card"><span class="k">SS M_isen peak</span><span class="v" id="m_ss_m">—</span></div>
+    <div class="metric-card"><span class="k">Lieblein DF_SS</span><span class="v" id="m_df">—</span></div>
+    <div class="metric-card"><span class="k">SS diffusion</span><span class="v" id="m_diff_ss">—</span></div>
+    <div class="metric-card"><span class="k">PS diffusion</span><span class="v" id="m_diff_ps">—</span></div>
+    <div class="metric-card"><span class="k">LE ΔCp</span><span class="v" id="m_le">—</span></div>
+    <div class="metric-card"><span class="k">TE ΔCp</span><span class="v" id="m_te">—</span></div>
+    <div class="metric-card"><span class="k">n shocks</span><span class="v" id="m_nshock">—</span></div>
+    <div class="metric-card"><span class="k">strongest shock x/c</span><span class="v" id="m_shock_x">—</span></div>
+    <div class="metric-card"><span class="k">max shock dCp</span><span class="v" id="m_shock_d">—</span></div>
+    <div class="metric-card"><span class="k">top loss id</span><span class="v" id="m_top">—</span></div>
+    <div class="metric-card"><span class="k">tip Mach proxy</span><span class="v" id="m_tip_m">—</span></div>
+    <div class="metric-card"><span class="k">ṁ</span><span class="v" id="m_mdot">—</span></div>
+    <div class="metric-card"><span class="k">power</span><span class="v" id="m_power">—</span></div>
+    <div class="metric-card"><span class="k">metal β1* / β2*</span><span class="v" id="m_metal_b">—</span></div>
+    <div class="metric-card"><span class="k">o/s throat</span><span class="v" id="m_os">—</span></div>
+    <div class="metric-card"><span class="k">stagger</span><span class="v" id="m_stagger">—</span></div>
+    <div class="metric-card"><span class="k">i / δ</span><span class="v" id="m_i_d">—</span></div>
+  </div>
+
+  <div class="fix-panel" id="fix_box">
+    <div class="fix-panel-head">
+      <span class="fix-panel-title">Design fixes · industry standards</span>
+      <span id="advice_summary" class="hint">waiting for report…</span>
+    </div>
+    <div class="fix-panel-blurb hint">
+      After <b>Build full design report</b>, open issues appear as cards below.
+      Uncheck any you want to skip, then apply — knobs in §1–2 update and the board re-analyzes.
+      Resolved items leave the list cleanly (no empty gap). Auto-iterate can drive remaining
+      fixes until gates settle, then hand off to §3–4 OpenFOAM.
+    </div>
+    <div class="fix-status-bar" id="fix_status_bar" aria-live="polite"></div>
+    <div id="suggestion_list">
+      <div class="fix-empty" id="fix_list_placeholder">
+        <strong>No analysis yet</strong>
+        Run <b>Build full design report</b> to populate industry pass/fail cards.
+      </div>
+    </div>
+    <div class="fix-toolbar">
+      <input type="button" id="btn_select_all_fixes" value="Select all" onclick="setAllSuggestionChecks(true)">
+      <input type="button" id="btn_select_none_fixes" value="Select none" onclick="setAllSuggestionChecks(false)">
+      <span class="fix-toolbar-sep" aria-hidden="true"></span>
+      <input type="button" id="btn_auto_redesign" class="fix-btn-primary"
+             value="Apply selected &amp; re-analyze"
+             onclick="applySelectedFixesAndReanalyze()">
+      <input type="button" id="btn_auto_converge" class="fix-btn-accent"
+             value="Auto-iterate → OpenFOAM"
+             onclick="runAutoConvergeAndOpenFOAM()"
+             title="Repeatedly apply all open fixes + re-analyze until gates settle, then rebuild case and run full mesh/solve/sample">
+      <input type="button" id="btn_auto_converge_stop"
+             value="Stop"
+             onclick="stopAutoConverge()"
+             disabled>
+      <label class="hint" style="font-style:normal;">max
+        <input type="number" id="auto_max_rounds" value="8" min="1" max="20" step="1"
+               style="width:3.2em; font-family:Courier New,monospace;">
+      </label>
+      <span id="auto_rerun_status" class="hint"></span>
+    </div>
+    <div id="delta_box" class="fix-delta hint" style="font-family:'Courier New',monospace; white-space:pre-wrap;"></div>
+    <details style="margin:0 12px 10px 12px;">
+      <summary style="cursor:pointer; font-weight:bold; font-size:13px;">Literature sources</summary>
+      <div id="industry_citations" class="hint" style="font-size:11px; margin-top:6px;"></div>
+    </details>
+  </div>
+
+  <span class="sec" style="font-size:16px;">5b · Plots (Cp · loading · isentropic M · loss bars · shock charts)</span>
+  <div class="plot-row">
+    <img id="cp_img" alt="Cp plot" style="display:none;">
+    <img id="plot_loading" alt="Loading / Mach" style="display:none;">
+    <img id="plot_loss_bars" alt="Loss severity" style="display:none;">
+    <img id="plot_hill_shock" alt="Hill-Peterson shock ratios" style="display:none;">
+  </div>
+
+  <span class="sec" style="font-size:16px;">5b2 · Shock property table (Hill &amp; Peterson §3.7 style)</span>
+  <div class="howto" style="max-width:980px;">
+    Perfect-gas <b>normal-shock jump relations</b> for each detected recompression:
+    M₁, M₂, p₂/p₁, ρ₂/ρ₁, T₂/T₁, p₀₂/p₀₁ (total-pressure loss).
+    M₁ from surface isentropic Mach estimate; ratios from textbook gasdynamics
+    (Hill &amp; Peterson, <i>Mechanics and Thermodynamics of Propulsion</i>, 2nd ed., §3.7).
+    <span id="gasdynamics_note" class="hint"></span>
+  </div>
+  <div class="scroll-table">
+    <table class="data" id="shock_table">
+      <thead>
+        <tr>
+          <th>side</th><th>x/c</th><th>sev</th>
+          <th>M₁</th><th>M₂</th>
+          <th>p₂/p₁</th><th>ρ₂/ρ₁</th><th>T₂/T₁</th><th>p₀₂/p₀₁</th>
+          <th>kind</th>
+        </tr>
+      </thead>
+      <tbody id="shock_table_body"></tbody>
+    </table>
+  </div>
+  <div class="hint">
+    Reference normal-shock chart data (ratios vs M₁) is also exported as
+    <code>normal_shock_chart</code> / plot above — same class of table as textbook pp. 85–87.
+  </div>
+
+  <span class="sec" style="font-size:16px;">5c · Station table (every 5% chord)</span>
+  <div class="scroll-table">
+    <table class="data" id="stations_table">
+      <thead>
+        <tr>
+          <th>x/c</th><th>Cp_PS</th><th>Cp_SS</th><th>ΔCp</th>
+          <th>p_PS</th><th>p_SS</th><th>M_isen_SS</th>
+        </tr>
+      </thead>
+      <tbody id="stations_body"></tbody>
+    </table>
+  </div>
+
+  <span class="sec" style="font-size:16px;">5d · Full PS / SS samples</span>
+  <div class="scroll-table">
+    <table class="data" id="surface_table">
+      <thead>
+        <tr><th>side</th><th>x/c</th><th>p [Pa]</th><th>Cp</th></tr>
+      </thead>
+      <tbody id="surface_body"></tbody>
+    </table>
+  </div>
+</form>
+
+<hr>
+
+<form name="lossform">
+  <span class="sec" id="sec6">6 · Loss map &amp; ranked fixes (turn knobs → re-run)</span>
+  <div class="howto">
+    Each item is a <b>design defect signature</b> from the surface solution: location, mechanism,
+    quantitative evidence, severity, and which §1–2 knobs to change. Iterate for higher
+    <code>η_design proxy</code> and fewer shocks — the path to a flight-ready metal shape.
+  </div>
+  <ul class="block">
+    <table border>
+      <tr>
+        <th>summary=</th><th colspan="7"><input type="text" name="loss_summary" id="loss_summary" size="90"></th>
+      </tr>
+      <tr>
+        <th>package / loss JSON=</th><th colspan="7"><input type="text" name="loss_json_path" id="loss_json_path" size="90"></th>
+      </tr>
+    </table>
+
+    <div class="howto" style="background:#f8f0e8; margin-top:10px;">
+      <b>Ranked design fixes (highest severity first)</b>
+      <ol id="loss_fixes" style="margin:6px 0 0 22px;"></ol>
+    </div>
+
+    <div class="howto" style="margin-top:8px;">
+      <b>Shock candidates</b>
+      <div id="shock_items" style="font-size:13px; font-family:'Courier New',monospace; white-space:pre-wrap;"></div>
+    </div>
+
+    <div class="howto" style="margin-top:8px;">
+      <b>Loss items (location · mechanism · evidence · fix · knobs)</b>
+      <div id="loss_items" style="font-size:13px; font-family:'Courier New',monospace; white-space:pre-wrap; max-width:980px;"></div>
+    </div>
+
+    <div class="howto" style="margin-top:8px; background:#eef6ee;">
+      <b>Iteration checklist</b>
+      <ol class="checklist" id="iter_checklist"></ol>
+    </div>
+  </ul>
+</form>
+
+<hr>
+
+<form name="exportform">
+  <span class="sec" id="sec7">7 · Comparable design package (JSON/CSV) + engineering flow video</span>
+  <div class="howto">
+    <b>Design package (v3)</b> — offline, machine-diffable JSON + flat CSVs for comparing two
+    designs without the UI: operating point, §1–2 knobs, dense metrics, stations, shocks,
+    loss/ranked fixes, domain extents, and paths to companion tables.
+    Written under the case <code>postProcessing/</code> (or <code>output/</code>) as
+    <code>design_package.json</code>, <code>comparison_scalars.csv</code>,
+    <code>metrics_kv.csv</code>, plus surface/stations/shock CSVs when a report was built.
+    <br><br>
+    <b>Engineering cascade video</b> — OpenFOAM solves the flow; ParaView <code>pvbatch</code>
+    renders an animation with <b>blade metal (STL)</b>, <b>Mach / shock field</b>,
+    <b>streamlines + velocity vectors</b> (flow paths), time stamp, and design meta.
+    Requires §4 mesh+solve (t&gt;0). Without ParaView, the script is still written so you can run
+    <code>pvbatch technical_flow_video.py</code> later.
+  </div>
+  <div class="inherit">
+    <span class="ttl">From pipeline:</span>
+    Case dir = <input type="text" name="case_dir" id="from3_case_export" size="60" readonly>
+  </div>
+  <ul class="block">
+    <input type="button" value="Export design package (JSON + CSV)" onclick="exportDesignPackage()">
+    &nbsp;
+    <input type="button" value="Save §1–2 design only" onclick="saveDesign()">
+    &nbsp;
+    <a href="/api/download_design" target="_blank">Download last design</a>
+    <table border>
+      <tr>
+        <th>package=</th><th colspan="4"><input type="text" name="export_path" id="export_path" size="80"></th>
+      </tr>
+      <tr>
+        <th>exports=</th><th colspan="4"><input type="text" id="export_list" size="80"></th>
+      </tr>
+    </table>
+
+    <br>
+    <b>Engineering flow video (blades + Mach + streamlines)</b><br>
+    Fields:
+    <label><input type="checkbox" name="vfield" value="Mach" checked> Mach (shocks)</label>
+    <label><input type="checkbox" name="vfield" value="streamlines" checked> streamlines</label>
+    <label><input type="checkbox" name="vfield" value="U_vectors" checked> U vectors</label>
+    <label><input type="checkbox" name="vfield" value="rho_gradient" checked> rho_gradient</label>
+    <label><input type="checkbox" name="vfield" value="p"> p</label>
+    &nbsp; View =
+    <select name="view">
+      <option value="blade_passage_shocks" selected>blade_passage_shocks</option>
+      <option value="cascade_overview">cascade_overview</option>
+      <option value="surface_pressure">surface_pressure</option>
+    </select>
+    Resolution =
+    <select name="resolution">
+      <option>720p</option><option selected>1080p</option><option>4K</option>
+    </select>
+    fps = <input type="text" name="fps" value="12" size="4">
+    steady hold (s) = <input type="text" name="steady_hold_s" value="1" size="4"
+      title="Playback seconds holding the final/quasi-steady cascade field (default 1)">
+    <label><input type="checkbox" name="run_pv" checked> Run pvbatch</label>
+    <input type="button" value="Render engineering flow video" onclick="genVideo(this.form)">
+    <div class="hint">
+      With <b>Startup ICs</b> on the case (§3), the movie runs
+      <b>quiescent domain → inlet working fluid fills the cascade → shocks/passages form →
+      quasi-steady</b>, then holds the last frame for <b>≥1&nbsp;s of playback</b>
+      (paper-style cascade CFD, e.g. impulse-turbine Mach/shock sequences).
+      Default fields: Mach + streamlines + U vectors + blades STL.
+      Install ParaView and set <code>PVBATCH</code> if render fails with needs_pvbatch.
+    </div>
+    <table border>
+      <tr>
+        <th>video=</th><th><input type="text" name="video_status_out" size="14"></th>
+        <th></th>
+        <th>job=</th><th><input type="text" id="video_status" size="12"></th>
+      </tr>
+      <tr>
+        <th>message=</th><th colspan="4"><input type="text" name="video_msg" size="70"></th>
+      </tr>
+      <tr>
+        <th>output=</th><th colspan="4"><input type="text" name="video_out" size="70"></th>
+      </tr>
+    </table>
+  </ul>
+</form>
+
+<hr>
+<small class="foot">
+  ImpulseCalc 1.3 — design-review CFD board after §4: metrics · PS/SS tables · shocks · ranked fixes · comparable JSON packages.<br>
+  Headless: <code>POST /api/design_report</code> or <code>POST /api/run_job</code>.
+  Start: <code>.\start.ps1</code> → <code>http://127.0.0.1:8765/calc.html</code>
+</small>
+<script>
+  if (window.AppChrome) {
+    AppChrome.install({
+      currentId: "impulsecalc",
+      title: "ImpulseCalc",
+      sections: [
+        { id: "sec1", label: "§1 Meanline" },
+        { id: "sec2", label: "§2 Blade" },
+        { id: "sec3", label: "§3 Case" },
+        { id: "sec4", label: "§4 CFD" },
+        { id: "sec5", label: "§5 Pressure" },
+        { id: "sec6", label: "§6 Losses" },
+        { id: "sec7", label: "§7 Export" }
+      ]
+    });
+  }
+</script>
+</body>
+</html>

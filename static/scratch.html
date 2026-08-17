@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>Scratch pad</title>
+  <script language="JavaScript">
+  function format(s) {
+    var val = eval(s);
+    if (Math.abs(val) < 1.0e+6 && Math.abs(val) > 1.0e-5) {
+      if (val > 0.0) return " " + String(val).substring(0, 10);
+      return String(val).substring(0, 11);
+    }
+    return String(val);
+  }
+  function compute(form) {
+    try {
+      with (Math) {
+        var g = eval(form.g.value);
+      }
+      form.m.value = format("" + g);
+    } catch (e) {
+      form.m.value = "Error";
+    }
+  }
+  </script>
+</head>
+<body style="background-color:#d4cce8;background-image:linear-gradient(rgba(88,48,128,0.22),rgba(72,40,110,0.18)),url('winback.gif');">
+<form>
+  <center>
+    <big><b>Scratch pad</b></big>
+    <input type="text" name="g" size="50">
+    =
+    <input type="text" name="m" size="12">
+    <input type="button" value="Evaluate" onclick="compute(this.form)">
+  </center>
+</form>
+</body>
+</html>

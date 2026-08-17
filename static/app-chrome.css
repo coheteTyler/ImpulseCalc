@@ -1,0 +1,173 @@
+/* Standalone app chrome — section header + Tesla-style sibling rail */
+:root {
+  --ac-header-h: 44px;
+  --ac-rail-w: 58px;
+}
+
+body.has-app-chrome {
+  padding-top: calc(var(--ac-header-h) + 8px);
+  padding-left: calc(var(--ac-rail-w) + 10px);
+}
+
+.app-sec,
+#sec1, #sec2, #sec3, #sec4, #sec5, #sec6, #sec7,
+#sec-inputs, #sec-results {
+  scroll-margin-top: calc(var(--ac-header-h) + 12px);
+}
+
+.app-chrome-header {
+  position: sticky;
+  top: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--ac-header-h);
+  padding: 0 10px 0 4px;
+  margin: -8px -8px 10px -8px;
+  background: rgba(28, 22, 38, 0.94);
+  color: #f3eef8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: system-ui, Segoe UI, sans-serif;
+  font-size: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.app-chrome-header .ac-mark {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+}
+
+.app-chrome-header .ac-mark:hover { background: rgba(255, 255, 255, 0.08); }
+
+.app-chrome-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  flex: 1;
+}
+
+.app-chrome-header nav a {
+  color: #d8d0e4;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.app-chrome-header nav a:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.app-chrome-header nav a.active { background: #e8d5a3; color: #1a1410; font-weight: 600; }
+
+.app-chrome-rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--ac-rail-w);
+  z-index: 8100;
+  background: #0b0b0b;
+  border-right: 1px solid #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0 12px;
+  gap: 8px;
+  font-family: system-ui, Segoe UI, sans-serif;
+}
+
+.app-chrome-rail .ac-tile {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
+  background: #141414;
+  color: #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0;
+  position: relative;
+}
+
+.app-chrome-rail .ac-tile:hover { background: #1c1c1c; border-color: #444; }
+.app-chrome-rail .ac-tile.current {
+  border-color: #e8d5a3;
+  box-shadow: 0 0 0 1px #e8d5a3;
+}
+.app-chrome-rail .ac-tile.up::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3dd68c;
+}
+.app-chrome-rail .ac-tile.dim { opacity: 0.45; }
+
+.app-chrome-ctx {
+  position: fixed;
+  z-index: 9000;
+  min-width: 160px;
+  background: #111;
+  color: #eee;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-family: system-ui, Segoe UI, sans-serif;
+  font-size: 13px;
+}
+.app-chrome-ctx.hidden { display: none; }
+.app-chrome-ctx button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+}
+.app-chrome-ctx button:hover { background: #222; }
+
+.app-chrome-toast {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9100;
+  background: #111;
+  color: #f4f4f4;
+  border: 1px solid #333;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.app-chrome-toast.hidden { display: none; }
+
+/* Book apps already have a .wrap — keep rail/header from colliding */
+body.has-app-chrome .wrap {
+  padding-top: 16px;
+}
+
+/* Do not let the Library send-back bar appear in standalone chrome */
+body.has-app-chrome #lpre_book_bar { display: none !important; }

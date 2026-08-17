@@ -1,0 +1,58 @@
+{
+  "format": "impulsecalc_validation_v1",
+  "name": "ETC2019-165_rotor_cascade",
+  "source": "Sebelev et al., ETC2019-165, Table 1 (rotor relative cascade proxy)",
+  "notes": [
+    "Full paper is 3D nozzle+rotor URANS in CFX. This config is the 2D relative-frame",
+    "cascade equivalent used by ImpulseCalc (blade walls + density-based solver).",
+    "β1 paper magnitude 36°, α1 paper 20°, Dm=103.5 mm, Z2=55, B2≈9.5 mm, l2=10 mm.",
+    "Flow β1 is signed negative so ImpulseCalc Ct=Wt+U recovers |α1|≈20° with U>0.",
+    "Pure impulse: p_out≈0.95 p1 (expansion is in the nozzle, not the rotor).",
+    "Paper-like blade: t/c≈0.18, LE fillet ~ Seume 0.2 mm scale (not default 0.50 thick bucket)."
+  ],
+  "meanline_inputs": {
+    "blade_name": "etc2019_165_rotor",
+    "beta1_deg": -36.0,
+    "pure_impulse_lock": true,
+    "blade_speed_u_m_s": null,
+    "w1_m_s": null,
+    "p1_pa": 228079,
+    "t1_k": 320,
+    "gamma": 1.4,
+    "r_specific_j_kg_k": 287,
+    "mu_pa_s": 1.8e-05,
+    "chord_m": 0.0095,
+    "solidity": 1.60693,
+    "mean_radius_m": 0.05175,
+    "span_m": 0.01,
+    "n_blades_machine": 55,
+    "tip_radius_m": 0.05675,
+    "hub_radius_m": 0.04675
+  },
+  "blade_shape": {
+    "thickness_ratio": 0.18,
+    "thickness_peak_x": 0.45,
+    "le_fillet_r_c": 0.021,
+    "te_fillet_r_c": 0.015,
+    "te_thickness_c": 0.012,
+    "le_shape": "circular",
+    "arc_bulge": 1.0
+  },
+  "targets": {
+    "alpha1_deg_abs": 20.0,
+    "beta1_deg_abs": 36.0,
+    "U_over_W1": 0.293327,
+    "reaction": 0.0,
+    "Mw1": 1.35,
+    "euler_work_magnitude_j_kg": 80803.17
+  },
+  "cfd": {
+    "n_blades_domain": 3,
+    "nx": 56,
+    "ny": 36,
+    "startup": false,
+    "end_time": 0.00015,
+    "maxCo_note": "auto 0.03 when Mw1>=1.2",
+    "solver": "foamRun -solver shockFluid"
+  }
+}

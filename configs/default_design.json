@@ -1,0 +1,83 @@
+{
+  "format": "impulsecalc_v1",
+  "notes": [
+    "DEFAULT: small modern LPRE gas-generator partial-admission impulse turbine class.",
+    "Use §2 presets for F-1 class / H-1 class scale. Metal: mid thick, LE/TE thinner."
+  ],
+  "meanline_inputs": {
+    "beta1_deg": 72.0,
+    "beta2_deg": -72.0,
+    "blade_speed_u_m_s": 450.0,
+    "w1_m_s": 950.0,
+    "p1_pa": 3000000.0,
+    "t1_k": 1000.0,
+    "gamma": 1.3,
+    "r_specific_j_kg_k": 320.0,
+    "mu_pa_s": 4.5e-05,
+    "chord_m": 0.01,
+    "solidity": 1.2,
+    "blade_name": "small_gg_pa",
+    "y_plus_target": 1.0,
+    "pure_impulse_lock": true,
+    "mean_radius_m": 0.046,
+    "rpm": 60000.0,
+    "u_from_rpm": true,
+    "span_m": 0.008,
+    "tip_radius_m": 0.05,
+    "hub_radius_m": 0.042,
+    "n_blades_machine": 48,
+    "mass_flow_kg_s": 0.5,
+    "power_target_w": 200000.0,
+    "incidence_deg": 0.0,
+    "deviation_deg": 1.0
+  },
+  "blade_shape": {
+    "profile_family": "impulse_bucket",
+    "upper_sagitta_c": 0.48,
+    "lower_sagitta_c": 0.28,
+    "thickness_ratio": 0.20,
+    "wall_thickness_c": 0.20,
+    "bucket_suction_cutback": 0.0,
+    "thickness_peak_x": 0.50,
+    "le_fillet_r_c": 0.0,
+    "te_fillet_r_c": 0.0,
+    "inlet_line_frac": 0.0,
+    "outlet_line_frac": 0.0,
+    "arc_bulge": 1.10,
+    "n_points": 160,
+    "stagger_deg": null,
+    "camber_dist": 0.5,
+    "le_shape": "circular",
+    "te_thickness_c": 0.0,
+    "te_wedge_deg": 10.0
+  },
+  "geometry": {
+    "rotor_tip_radius_m": 0.05,
+    "hub_radius_m": 0.042,
+    "mean_radius_m": 0.046,
+    "span_m": 0.008,
+    "n_blades": 48,
+    "chord_m": 0.01,
+    "blade_spacing_m": 0.006021,
+    "solidity": 1.661,
+    "min_blade_thickness_m": 0.0022,
+    "thickness_ratio": 0.22,
+    "profile_family": "impulse_bucket",
+    "partial_admission": 0.30
+  },
+  "lpre_design": {
+    "architecture": {
+      "type": "axial_impulse",
+      "n_stages": 1,
+      "n_rows": 1,
+      "reaction": 0,
+      "partial_admission": true,
+      "epsilon": 0.30
+    },
+    "system": {
+      "u_over_c0": 0.27,
+      "PR": 15,
+      "rpm": 60000
+    }
+  }
+}
