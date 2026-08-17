@@ -1128,7 +1128,7 @@ def main(argv: list[str] | None = None) -> int:
 
     url = "http://127.0.0.1:8765/calc.html"
     if _already_up():
-        print("ImpulseCalc already running — opening browser")
+        print("ImpulseCalc already running on http://127.0.0.1:8765/calc.html")
         if not args.no_browser:
             try:
                 webbrowser.open(url)
